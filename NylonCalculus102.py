@@ -231,6 +231,218 @@ plt.text(1966, -0.012,
          '\nAuthor: Sujit Shivaprasad'
          '\nNote: Drafts from 1989 to 2004 have less than 60 draft picks',
           fontsize=12)
+#plt.show()
+
+#Now lets create some bar plots for the average WS/48 of each pick
+#in the top 60
+
+top60_mean_WS48 = top60.groupby('Pk').WS_per_48.mean()
+sns.set_style("white")  
+
+# Set the x and y values
+x_values = top60.Pk.unique()
+y_values = top60_mean_WS48
+
+# Get our Figure and Axes objects
+fig, ax = plt.subplots(figsize=(15,10))  
+# Create a title
+title = ('Average Win Shares per 48 Minutes for each' 
+         '\nNBA Draft Pick in the Top 60 (1966-2014)')
+# Set the title font size to 18
+ax.set_title(title, fontsize=18)
+
+# Set x and y axis labels
+ax.set_xlabel('Draft Pick', fontsize=16)
+ax.set_ylabel('Win Shares Per 48 minutes', fontsize=16)
+
+# Set the tick label font size to 12
+ax.tick_params(axis='both', labelsize=12)
+
+# Set the x-axis limits
+ax.set_xlim(0,61)
+
+# Set the tick lables for picks 1 to 60
+ax.set_xticks(np.arange(1,61)) 
+
+# Create white y-axis grid lines to 
+ax.yaxis.grid(color='white')
+
+# overlay the white grid line on top of the bars
+ax.set_axisbelow(False)
+
+# Now add the bars to our plot
+# this is equivalent to plt.bar(x_values, y_values)
+ax.bar(x_values, y_values)
+
+# Get rid chart borders
+sns.despine(left=True, bottom=True)
+
+plt.text(0, -.05, 
+         'Primary Data Source: http://www.basketball-reference.com/draft/'
+         '\nAuthor: Sujit Shivaprasad'
+         '\nNote: Drafts from 1989 to 2004 have less than 60 draft picks',
+          fontsize=12)
+#plt.show()
+
+#Or horizontally so the axes are better labeled:
+
+sns.set_style("white")  
+
+# Note we flipped the value variable names
+y_values = top60.Pk.unique()
+x_values = top60_mean_WS48
+
+fig, ax = plt.subplots(figsize=(10,15))  
+title = ('Average Win Shares per 48 Minutes for each' 
+         '\nNBA Draft Pick in the Top 60 (1966-2014)')
+# Add title with space below for x-axix ticks and label
+ax.set_title(title, fontsize=18, y=1.06)
+# We can rotate an axis label via the rotation argument.
+# Here we set roation to 0 to so ylabel is read horizontally
+ax.set_ylabel('Draft \nPick', fontsize=16, rotation=0)
+ax.set_xlabel('Win Shares Per 48 minutes', fontsize=16)
+ax.tick_params(axis='both', labelsize=12)
+
+# Set a limit for our y-axis so that pick 1 is at the top
+ax.set_ylim(61,0)
+# Show all values for draft picks
+ax.set_yticks(np.arange(1,61))
+# pad the y-axis label so it doesn't overlap tick labels
+ax.yaxis.labelpad = 25
+
+# Move x-axis ticks and label to the top
+ax.xaxis.tick_top()
+ax.xaxis.set_label_position('top')
+
+# create white x-axis grid lines to 
+ax.xaxis.grid(color='white')
+
+# overlay the white grid line on top of the bars
+ax.set_axisbelow(False)
+
+# Now add the horizontal bars to our plot, 
+# and align them centerd with ticks
+ax.barh(y_values, x_values, align='center')
+
+# get rid of borders for our graph
+# Not using sns.despine as I get an issue with displaying
+# the x-axis at the top of the graph
+ax.spines["top"].set_visible(False)  
+ax.spines["bottom"].set_visible(False)  
+ax.spines["right"].set_visible(False)  
+ax.spines["left"].set_visible(False)
+
+plt.text(-0.02, 65, 
+         'Primary Data Source: http://www.basketball-reference.com/draft/'
+         '\nAuthor: Sujit Shivaprasad'
+         '\nNote: Drafts from 1989 to 2004 have less than 60 draft picks',
+          fontsize=12)
+
+#plt.show()
+
+#Or with plots/point plots:
+
+sns.set_style("white")  
+
+plt.figure(figsize=(10,15))
+
+# Create Axes object with pointplot drawn onto it.
+# This pointplot by default returns the mean along with a confidence
+# intervals drawn, default returns 95% CI.
+# The join parameter when set to True, draws a line connecting the points.
+ax = sns.pointplot(x='WS_per_48', y='Pk', join=False, data=top60, 
+                   orient='h')
+
+title = ('Average Win Shares per 48 Minutes (with 95% CI)' 
+         '\nfor each NBA Draft Pick in the Top 60 (1966-2014)')
+# Add title with space below for x-axix ticks and label
+ax.set_title(title, fontsize=18, y=1.06)
+
+ax.set_ylabel('Draft \nPick', fontsize=16, rotation=0)
+ax.set_xlabel('Win Shares Per 48 minutes', fontsize=16)
+ax.tick_params(axis='both', labelsize=12)
+# pad the y-axis label to not overlap tick labels
+ax.yaxis.labelpad = 25
+# limit x-axis
+ax.set_xlim(-0.1, 0.15)
+# Move x-axis ticks and label to the top
+ax.xaxis.tick_top()
+ax.xaxis.set_label_position('top')
+
+# add horizontal lines for each draft pick
+for y in range(len(y_values)):
+    ax.hlines(y, -0.1, 0.15, color='grey', linestyle='-', lw=0.5)
+    
+# Add a vertical line at 0.00 WS/48
+ax.vlines(0.00, -1, 60, color='grey', linestyle='-', lw=0.5)
+
+# get rid of borders for our graph
+# Not using sns.despine as I get an issue with displaying
+# the x-axis at the top of the graph
+ax.spines["top"].set_visible(False)  
+ax.spines["bottom"].set_visible(False)  
+ax.spines["right"].set_visible(False)  
+ax.spines["left"].set_visible(False)
+
+plt.text(-0.1, 63, 
+         'Primary Data Source: http://www.basketball-reference.com/draft/'
+         '\nAuthor: Sujit Shivaprasad'
+         '\nNote: Drafts from 1989 to 2004 have less than 60 draft picks',
+          fontsize=12)
+
+#plt.show()
+
+#Or with boxplots:
+
+top30 = top60[top60['Pk'] < 31]
+sns.set_style("whitegrid")
+
+plt.figure(figsize=(15,12))
+
+# create our Axes that contains our boxplot
+bplot = sns.boxplot(x='Pk', y='WS_per_48', data=top30, whis=[5,95], color='salmon')
+
+title = ('Distribution of Win Shares per 48 Minutes for each' 
+         '\nNBA Draft Pick in the Top 30 (1966-2014)')
+
+# set title, axis labels, and change tick label size
+bplot.set_title(title, fontsize=20)
+bplot.set_xlabel('Draft Pick', fontsize=16)
+bplot.set_ylabel('Win Shares Per 48 minutes', fontsize=16)
+bplot.tick_params(axis='both', labelsize=12)
+
+# get rid of chart borders
+sns.despine(left=True) 
+
+plt.text(-1, -.5, 
+         'Data source: http://www.basketball-reference.com/draft/'
+        '\nAuthor: Sujit Shivaprasad'
+         '\nNote: Whiskers represent the 5th and 95th percentiles',
+          fontsize=12)
+#plt.show()
+
+#Or violin plots:
+sns.set(style="whitegrid")
+
+plt.figure(figsize=(15,10))
+
+# create an Axes object that contains our violin plot
+vplot = sns.violinplot(x='Pk', y='WS_per_48', data=top10)
+
+title = ('Distribution of Win Shares per 48 Minutes for each' 
+         '\nNBA Draft Pick in the Top 10 (1966-2014)')
+
+# set title, axis labels, and change tick label size
+vplot.set_title(title, fontsize=20)
+vplot.set_xlabel('Draft Pick', fontsize=16)
+vplot.set_ylabel('Win Shares Per 48 minutes', fontsize=16)
+vplot.tick_params(axis='both', labelsize=12)
+
+plt.text(-1, -.55, 
+         'Data source: http://www.basketball-reference.com/draft/'
+        '\nAuthor: Sujit Shivaprasad',         
+          fontsize=12)
+
+sns.despine(left=True) 
+           
 plt.show()
-
-
